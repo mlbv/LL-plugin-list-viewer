@@ -1,8 +1,4 @@
-// 接口来自 https://github.com/XIU2/UserScript/blob/master/GithubEnhanced-High-Speed-Download.user.js
-
 import type { Config } from '../global'
-
-const mirrorRepo = 'https://github.com/XIU2/UserScript/blob/master/GithubEnhanced-High-Speed-Download.user.js'
 const hostReg = /^https?:\/\/[^/]+/
 
 export const originMirrors = ['https://mirror.ghproxy.com/', 'https://ghproxy.net/', 'https://github.moeyy.xyz/']
@@ -41,49 +37,6 @@ export async function initConfig() {
     save(config)
   })
 }
-export function getDynamicMirror() {
-  const m = getRandomItem(originMirrors)
-  const url = useMirror(mirrorRepo, m, false)
-  return fetchWithTimeout(url)
-    .then(e => {
-      if (e.status === 200) {
-        const reg = /(\w+)\s?=\s?(\[[\s\S]+?\n\s+\]),/g
-        let res = reg.exec(e.str)
-        let download_url_us: string[][] = [],
-          download_url: string[][] = [],
-          raw_url: string[][] = []
-        while (res) {
-          // console.log(res)
-          switch (res[1]) {
-            case 'download_url_us':
-              download_url_us = eval(res[2].replaceAll('&#10;', '\n'))
-              break
-            case 'download_url':
-              download_url = eval(res[2].replaceAll('&#10;', '\\n'))
-              break
-            case 'raw_url':
-              raw_url = eval(res[2].replaceAll('&#10;', '\\n'))
-              raw_url.shift()
-              break
-            default:
-              break
-          }
-          res = reg.exec(e.str)
-        }
-        return {
-          download_url_us,
-          download_url,
-          raw_url
-        }
-      } else {
-        throw new Error(`Fetch mirror failed: ${e.statusText}`)
-      }
-    })
-    .catch(err => {
-      throw new Error(`error message: ${err.message}\nurl: ${url}`)
-    })
-}
-
 export function getRandomItem(arr?: undefined): undefined
 export function getRandomItem<T>(arr: Array<T>): T
 export function getRandomItem<T>(arr: Array<T> | undefined): T | undefined
@@ -93,13 +46,7 @@ export function getRandomItem<T>(arr: Array<T> | undefined): T | undefined {
 
 export function useMirror(url: string, mirror: string, removeHost = true) {
   if (/\/gh$/.test(mirror) && mirror.includes('jsdelivr')) {
-    return (
-      mirror +
-      url
-        .replace(hostReg, '')
-        .replace('/raw/', '@')
-        .replace(/@v(?!v)/, '@vv')
-    )
+    return mirror + new URL(url).pathname.replace(/\/raw\/(?:refs\/heads\/)?/, '@')
   } else {
     return mirror + (removeHost ? url.replace(hostReg, '') : url)
   }
@@ -203,8 +150,9 @@ export function deepWatch<T extends object>(obj: T, callback: () => void): T {
     }
   } else {
     for (const key in obj) {
-      if (typeof obj[key] === 'object' && obj[key] !== null) {
-        obj[key] = deepWatch(obj[key], callback)
+      const value = obj[key]
+      if (typeof value === 'object' && value !== null) {
+        obj[key] = deepWatch(value, callback)
       }
     }
   }

@@ -1,98 +1,15 @@
-# LiteLoaderQQNT Plugin 插件列表查看
+# PhantomLoaderQQNT 插件市场
 
-> [!NOTE]
-> 该插件仅在 Windows 环境下测试开发，未对其他平台进行测试，不保证可用性
->
-> 喜欢的话不要吝啬你 star~
+插件列表查看支持搜索、依赖查看、安装、卸载和更新，使用 [PhantomLoaderQQNT-Plugin-Market](https://github.com/mlbv/PhantomLoaderQQNT-Plugin-Market) 作为插件目录。目录中的每个插件由仓库地址和分支指定，安装包从对应仓库的发行版或源码压缩包获取。
 
-> [!CAUTION]
-> **请不要在 QQ 官方群聊和任何影响力较大的简中互联网平台（包括但不限于: 哔哩哔哩，微博，知乎，抖音等）发布和讨论*任何*与本项目存在相关性的信息**
+下载本仓库的[发行版](https://github.com/mlbv/LL-plugin-list-viewer/releases/latest)，解压后将插件目录放入 PhantomLoaderQQNT 配置目录下的 `plugins`，重启 QQNT 即可在设置中打开插件市场。
 
-| LiteLoader 安装脚本 | [Mzdyl/LiteLoaderQQNT_Install](https://github.com/Mzdyl/LiteLoaderQQNT_Install)                                                                                                       |
-| ------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 自动打包状态        | [![状态：release](https://img.shields.io/github/actions/workflow/status/ltxhhz/LL-plugin-list-viewer/release.yml?logo=github)](https://github.com/ltxhhz/LL-plugin-list-viewer/actions) |
-| 总下载量            | ![download](https://img.shields.io/github/downloads/ltxhhz/LL-plugin-list-viewer/total?logo=github)                                                                                  |
-| 最新版本            | [![version](https://img.shields.io/github/v/release/ltxhhz/LL-plugin-list-viewer?logo=github)](https://github.com/ltxhhz/LL-plugin-list-viewer/releases)                                |
+设置中的 `github.io` 开关使用查看器提供的合并清单和图标缓存。关闭后，插件直接读取市场目录和各插件仓库。镜像、代理和 GitHub Token 可以在设置中配置，现有 `list-viewer` 配置会继续使用。
 
-## 功能
+![插件列表](./imgs/1.png)
 
-- 插件列表查看
-- 插件检查更新
-- 插件安装（支持镜像）
-- 插件卸载
-- 插件查找
+从源码构建时，运行 `npm ci` 和 `npm run build`，将生成的 `dist` 目录作为插件安装。构建同时生成 `list-viewer.zip`。
 
-![](./imgs/1.png)
+插件开发者可以向[市场仓库](https://github.com/mlbv/PhantomLoaderQQNT-Plugin-Market)提交目录条目。发行版中的插件压缩包以 `manifest.json` 的 `slug` 或 `name` 命名时，市场会优先选用该文件。
 
-- 依赖查找
-
-![gif](./imgs/2.gif)
-
-## 使用方法
-
-支持 LiteLoader 1.x
-
-**v1.5.0+** 推荐打开此开关以使用 `github.io` 域名作为数据来源，可以加快访问和列表加载速度，但数据有小于两小时的缓存时间。
-![setting](./imgs/3.png)
-
-### 下载发行版
-
-1. 下载[发行版（release）](https://github.com/ltxhhz/LL-plugin-list-viewer/releases/latest)并解压到某个文件夹中
-2. 将解压到的文件夹移动至 `LiteLoaderQQNT数据目录/plugins/` 下面
-3. 重启 QQNT
-
-### 使用 git clone
-
-1. clone 本仓库 `git clone https://github.com/ltxhhz/LL-plugin-list-viewer.git`
-2. 运行以下命令
-
-```bash
-npm i
-npm run build
-```
-
-3. 如果 clone 到了 `plugins` 目录下，修改 `manifest.json` 中 `inject` 为
-
-```json
-"injects": {
-    "main": "./dist/main/index.js",
-    "preload": "./dist/preload/index.js",
-    "renderer": "./dist/renderer/index.js"
-}
-```
-
-> 否则可以将 `dist` 目录移动到 `LiteLoaderQQNT数据目录/plugins/` 目录下
-
-## 插件开发者注意
-
-`manifest.json` 文件需要严格按照 [LiteLoader 的文档要求](https://liteloaderqqnt.github.io/docs/introduction.html#manifest-json) 进行编写。
-
-> p.s.有一部分插件将字段 `authors:[{}]` 写成了 `author:{}`，这会导致插件开发者显示为空(LiteLoader 中也会)，这里不会做适配。
-
-如果插件的发行版中除了 LiteLoader 插件还有其他压缩包，如 [NapCatQQ](https://github.com/NapNeko/NapCatQQ)，建议将 LiteLoader 插件压缩包以 `mainifest.json` 中 `slug` 或 `name` 命名。(v1.3.10+)
-
-## 已知的问题
-
-> 暂时没有计划修复或无法修复
-
-- 查询慢或者不稳，因为内置的几个镜像是随机使用，可以重新刷新或安装以使用另一个接口或使用 `github.io` 作为数据来源
-- ~~dialog 展示一次后列表顶部多出一部分空白，并且出现折叠图标，点击无效，同样是 LiteLoader 的组件，可能是 dialog 导致样式改变~~
-  [已修复#266](https://github.com/LiteLoaderQQNT/LiteLoaderQQNT/issues/266)
-- release 更新时需要调用 `api.github.com` ，但没有镜像可用，可能需要配合代理
-
-## Star History
-
-<a href="https://www.star-history.com/#ltxhhz/LL-plugin-list-viewer&type=timeline&legend=top-left">
- <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=ltxhhz/LL-plugin-list-viewer&type=timeline&theme=dark&legend=top-left" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=ltxhhz/LL-plugin-list-viewer&type=timeline&legend=top-left" />
-   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=ltxhhz/LL-plugin-list-viewer&type=timeline&legend=top-left" />
- </picture>
-</a>
-
-
-## 鸣谢
-
-- [ltxhhz](https://github.com/ltxhhz) 辛苦我了
-- [LiteLoaderQQNT](https://github.com/LiteLoaderQQNT/LiteLoaderQQNT)
-- [LiteLoaderQQNT-PluginTemplate-Vite](https://github.com/MisaLiu/LiteLoaderQQNT-PluginTemplate-Vite)
+本插件基于 [ltxhhz/LL-plugin-list-viewer](https://github.com/ltxhhz/LL-plugin-list-viewer)，沿用 GPL-3.0 许可证。

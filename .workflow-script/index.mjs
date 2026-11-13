@@ -8,8 +8,8 @@ import pLimit from 'p-limit'
 // const agent = new HttpsProxyAgent('http://127.0.0.1:10809')
 
 const listUrl = {
-  repo: 'LiteLoaderQQNT/Plugin-List',
-  branch: 'v4',
+  repo: 'mlbv/PhantomLoaderQQNT-Plugin-Market',
+  branch: 'master',
   file: 'plugins.json'
 }
 
@@ -65,7 +65,7 @@ async function main() {
               })
               .catch(e => {
                 if (e.status == 404) {
-                  return 404
+                  return null
                 }
                 console.error(e)
               })

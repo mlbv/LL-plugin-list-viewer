@@ -1,12 +1,13 @@
 {
   "name": "list-viewer",
-  "version": "1.5.1",
+  "version": "2.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "npx eslint --fix src/**/* --ext .js,.ts",
-    "build": "npx electron-vite build",
+    "typecheck": "tsc --noEmit -p tsconfig.node.json && tsc --noEmit -p tsconfig.web.json",
+    "build": "npm run typecheck && electron-vite build",
     "build-test": "npm run build && xcopy .\\dist\\* \"..\\..\\work space\\LiteLoaderQQNT\\plugins\\list-viewer\\\" /S /Y",
     "move-test": "xcopy .\\dist\\* \"..\\..\\work space\\LiteLoaderQQNT\\plugins\\list-viewer\\\" /S /Y",
     "bump-patch": "node bump.cjs --patch",

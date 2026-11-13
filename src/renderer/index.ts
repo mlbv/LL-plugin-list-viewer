@@ -5,9 +5,10 @@ import { QCheck, QInput } from './components'
 import { config, fetchWithTimeout, getRandomItem, localFetch, originMirrors, initConfig, useMirror, SortType, thisSlug, isSameDay } from './utils'
 
 const listUrl = {
-  repo: 'LiteLoaderQQNT/Plugin-List',
-  branch: 'v4',
-  file: 'plugins.json'
+  repo: 'mlbv/PhantomLoaderQQNT-Plugin-Market',
+  branch: 'master',
+  file: 'plugins.json',
+  cacheUrl: 'https://mlbv.github.io/LL-plugin-list-viewer'
 }
 
 const defaultIcon = 'local://root/src/common/static/default.png'
@@ -823,7 +824,7 @@ async function getList(noCache = false, again = false): Promise<PluginList | str
 }
 
 async function getListGithubIO(noCache = false): Promise<Array<Plugin & { manifest: Manifest | null }> | string> {
-  const url = 'https://ltxhhz.github.io/LL-plugin-list-viewer/all-manifest.json'
+  const url = `${listUrl.cacheUrl}/all-manifest.json`
   return await fetchWithTimeout(url, {
     cache: noCache ? 'no-cache' : 'default'
   })
@@ -987,7 +988,7 @@ function getIconUrls(item: Plugin, manifest: Manifest): [string?, string?] | Pro
 }
 
 async function getIconsGithubIO(noCache = false): Promise<Record<string, string> | string> {
-  return fetchWithTimeout('https://ltxhhz.github.io/LL-plugin-list-viewer/all-icons.json', {
+  return fetchWithTimeout(`${listUrl.cacheUrl}/all-icons.json`, {
     cache: noCache ? 'no-cache' : 'default'
   })
     .then(res => {
@@ -1037,6 +1038,7 @@ async function getLatestReleaseUrl(item: Plugin, manifest: Manifest): Promise<{ 
       throw new Error(`${err.message} \n${url}`)
     })
   const zipFile =
+    body.assets?.find?.(asset => asset.name === manifest.repository?.release?.file) ??
     body.assets?.find?.(asset => asset.name === `${manifest.slug}.zip`) ??
     body.assets?.find?.(asset => asset.name === `${manifest.name}.zip`) ??
     body.assets?.find?.(asset => asset.name.endsWith('.zip'))
