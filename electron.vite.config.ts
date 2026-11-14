@@ -1,13 +1,23 @@
 import { defineConfig } from 'electron-vite'
 import { defineConfig as defineViteConfig } from 'vite'
 import { resolve } from 'path'
+import { readdirSync } from 'fs'
 import viteChecker from 'vite-plugin-checker'
 import viteCp from 'vite-plugin-cp'
 import viteZipPack from 'unplugin-zip-pack/vite'
 import PluginManifest from './manifest.json'
+import PackageLock from './package-lock.json'
 
 const SRC_DIR = resolve(__dirname, './src')
 const OUTPUT_DIR = resolve(__dirname, './dist')
+const RuntimeLicenseTargets = Object.entries(PackageLock.packages as Record<string, { dev?: boolean }>)
+  .filter(([packagePath, pkg]) => packagePath && !pkg.dev)
+  .flatMap(([packagePath]) => readdirSync(resolve(__dirname, packagePath))
+    .filter(file => /^(?:licen[cs]e|notice|copying|copyright)/i.test(file))
+    .map(file => ({
+      src: `${packagePath}/${file}`,
+      dest: `dist/licenses/${packagePath.replaceAll('node_modules/', '')}`
+    })))
 
 const BaseConfig = defineViteConfig({
   root: __dirname,
@@ -57,7 +67,13 @@ export default defineConfig({
       viteCp({
         targets: [
           { src: './manifest.json', dest: 'dist' },
-          { src: './src/assets', dest: 'dist/assets' }
+          { src: './LICENSE', dest: 'dist' },
+          { src: './README.md', dest: 'dist' },
+          { src: './src/assets', dest: 'dist/assets' },
+          ...RuntimeLicenseTargets,
+          { src: './licenses/QuickJS.txt', dest: 'dist/licenses/@tootallnate/quickjs-emscripten' },
+          { src: './node_modules/degenerator/README.md', dest: 'dist/licenses/degenerator' },
+          { src: './node_modules/netmask/README.md', dest: 'dist/licenses/netmask' }
         ]
       }),
       viteZipPack({
