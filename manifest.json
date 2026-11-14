@@ -7,7 +7,7 @@
   "description": "插件列表查看·安装·更新",
   "icon": "assets/icon.svg",
   "thumb": "assets/icon.svg",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "authors": [
     {
       "name": "ltxhhz",
@@ -28,7 +28,7 @@
     "repo": "mlbv/LL-plugin-list-viewer",
     "branch": "main",
     "release": {
-      "tag": "v2.0.0",
+      "tag": "v2.0.1",
       "file": "list-viewer.zip"
     }
   }

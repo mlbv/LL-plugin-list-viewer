@@ -46,7 +46,8 @@ export function getRandomItem<T>(arr: Array<T> | undefined): T | undefined {
 
 export function useMirror(url: string, mirror: string, removeHost = true) {
   if (/\/gh$/.test(mirror) && mirror.includes('jsdelivr')) {
-    return mirror + new URL(url).pathname.replace(/\/raw\/(?:refs\/heads\/)?/, '@')
+    const rawPath = new URL(url).pathname
+    return rawPath.includes('/raw/') ? mirror + rawPath.replace('/raw/', '@') : url
   } else {
     return mirror + (removeHost ? url.replace(hostReg, '') : url)
   }
